@@ -2,13 +2,13 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "sites_func_001_name": {
-            "value": "func-new"
+        "sites_web_001_name": {
+            "value": "webapp-new-001"
         },
-        "serverfarms_ASP_func_externalid": {
+        "serverfarms_ASP_externalid": {
             "value": "/subscriptions/8de42282-72ff-4d35-b380-ccfbf9e8f3fd/resourceGroups/rg-app-new/providers/Microsoft.Web/serverfarms/ASP-new"
         },
-        "func_location": {
+        "webapp_location": {
             "value": "japaneast"
         }
     }

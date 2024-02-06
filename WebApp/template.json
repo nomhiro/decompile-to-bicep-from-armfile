@@ -1,0 +1,1493 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sites_web_ispirit_001_name": {
+            "defaultValue": "web-ispirit-001",
+            "type": "String"
+        },
+        "serverfarms_ASP_ispirit_externalid": {
+            "defaultValue": "/subscriptions/8de42282-72ff-4d35-b380-ccfbf9e8f3fd/resourceGroups/rg-assistantai-dev-eastus/providers/Microsoft.Web/serverfarms/ASP-ispirit",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2023-01-01",
+            "name": "[parameters('sites_web_ispirit_001_name')]",
+            "location": "Japan East",
+            "tags": {
+                "cost": "assistantai"
+            },
+            "kind": "app,linux",
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "[concat(parameters('sites_web_ispirit_001_name'), '.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "[concat(parameters('sites_web_ispirit_001_name'), '.scm.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[parameters('serverfarms_ASP_ispirit_externalid')]",
+                "reserved": true,
+                "isXenon": false,
+                "hyperV": false,
+                "vnetRouteAllEnabled": false,
+                "vnetImagePullEnabled": false,
+                "vnetContentShareEnabled": false,
+                "siteConfig": {
+                    "numberOfWorkers": 1,
+                    "linuxFxVersion": "PYTHON|3.10",
+                    "acrUseManagedIdentityCreds": false,
+                    "alwaysOn": true,
+                    "http20Enabled": false,
+                    "functionAppScaleLimit": 0,
+                    "minimumElasticInstanceCount": 0
+                },
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": false,
+                "clientCertEnabled": false,
+                "clientCertMode": "Required",
+                "hostNamesDisabled": false,
+                "customDomainVerificationId": "6577131C27CD16A213D39EC5E4A2573F242595330E6F4FB08D64B3A8772F65A4",
+                "containerSize": 0,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": true,
+                "redundancyMode": "None",
+                "publicNetworkAccess": "Enabled",
+                "storageAccountRequired": false,
+                "keyVaultReferenceIdentity": "SystemAssigned"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/ftp')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ],
+            "tags": {
+                "cost": "assistantai"
+            },
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/scm')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ],
+            "tags": {
+                "cost": "assistantai"
+            },
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/web')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ],
+            "tags": {
+                "cost": "assistantai"
+            },
+            "properties": {
+                "numberOfWorkers": 1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php",
+                    "hostingstart.html"
+                ],
+                "netFrameworkVersion": "v4.0",
+                "linuxFxVersion": "PYTHON|3.10",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "remoteDebuggingVersion": "VS2019",
+                "httpLoggingEnabled": false,
+                "acrUseManagedIdentityCreds": false,
+                "logsDirectorySizeLimit": 35,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "$web-ispirit-001",
+                "scmType": "None",
+                "use32BitWorkerProcess": true,
+                "webSocketsEnabled": false,
+                "alwaysOn": true,
+                "appCommandLine": "python -m streamlit run chat.py --server.port 8000 --server.address 0.0.0.0",
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot",
+                        "preloadEnabled": true
+                    }
+                ],
+                "loadBalancing": "LeastRequests",
+                "experiments": {
+                    "rampUpRules": []
+                },
+                "autoHealEnabled": false,
+                "vnetRouteAllEnabled": false,
+                "vnetPrivatePortsCount": 0,
+                "publicNetworkAccess": "Enabled",
+                "localMySqlEnabled": false,
+                "ipSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictionsUseMain": false,
+                "http20Enabled": false,
+                "minTlsVersion": "1.2",
+                "scmMinTlsVersion": "1.2",
+                "ftpsState": "FtpsOnly",
+                "preWarmedInstanceCount": 0,
+                "elasticWebAppScaleLimit": 0,
+                "functionsRuntimeScaleMonitoringEnabled": false,
+                "minimumElasticInstanceCount": 0,
+                "azureStorageAccounts": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/103493bd-8dc0-428e-9ff0-9fb74ad4aaac')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "ms-azuretools-vscode",
+                "deployer": "ms-azuretools-vscode",
+                "message": "Created via a push deployment",
+                "start_time": "2024-01-31T05:04:06.4846286Z",
+                "end_time": "2024-01-31T05:05:17.271309Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2e6b2cc5-bef6-4905-a4d8-1c37f921a8b9')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "ms-azuretools-vscode",
+                "deployer": "ms-azuretools-vscode",
+                "message": "Created via a push deployment",
+                "start_time": "2024-02-02T05:01:00.2451329Z",
+                "end_time": "2024-02-02T05:02:44.3380039Z",
+                "active": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/5ae74fb5-7c4a-4842-b3b1-88cbd1ac1e70')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "ms-azuretools-vscode",
+                "deployer": "ms-azuretools-vscode",
+                "message": "Created via a push deployment",
+                "start_time": "2024-01-30T07:40:59.2563073Z",
+                "end_time": "2024-01-30T07:41:15.9688921Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/820fa0d4-d3df-4785-b523-e5fda0ca82fb')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "ms-azuretools-vscode",
+                "deployer": "ms-azuretools-vscode",
+                "message": "Created via a push deployment",
+                "start_time": "2024-01-30T10:29:42.4791379Z",
+                "end_time": "2024-01-30T10:30:16.0889186Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/8dc2af31-f45d-4ab0-840d-143ae44790e4')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "ms-azuretools-vscode",
+                "deployer": "ms-azuretools-vscode",
+                "message": "Created via a push deployment",
+                "start_time": "2024-01-29T09:10:33.3911163Z",
+                "end_time": "2024-01-29T09:12:01.6275401Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/e010983b-1749-4067-835d-e1c07c3ad4a2')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "ms-azuretools-vscode",
+                "deployer": "ms-azuretools-vscode",
+                "message": "Created via a push deployment",
+                "start_time": "2024-01-31T01:18:19.3951605Z",
+                "end_time": "2024-01-31T01:19:33.2154566Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/ed19e830-05f9-4219-8821-0d9578fa34b6')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "ms-azuretools-vscode",
+                "deployer": "ms-azuretools-vscode",
+                "message": "Created via a push deployment",
+                "start_time": "2024-01-31T00:35:46.1549911Z",
+                "end_time": "2024-01-31T00:36:59.4707923Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/', parameters('sites_web_ispirit_001_name'), '.azurewebsites.net')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ],
+            "properties": {
+                "siteName": "web-ispirit-001",
+                "hostNameType": "Verified"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-26T05_00_04_8472865')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-26T10_00_05_5479747')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-26T13_00_06_0246014')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-26T16_00_06_4288995')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-26T19_00_06_8737778')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-26T22_00_07_3180950')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-27T01_00_07_8321603')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-27T05_00_08_4102817')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-27T11_00_09_2513554')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-27T14_00_09_7336050')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-27T17_00_10_2111021')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-27T20_00_10_6145444')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-27T23_00_11_0303402')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-28T02_00_11_4776225')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-28T05_00_12_0083873')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-28T10_00_12_6716331')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-28T13_00_13_1687917')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-28T16_00_13_5739980')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-28T19_00_14_0196098')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-28T22_00_14_4838775')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-29T01_00_14_8923448')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-29T04_00_15_3600015')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-29T07_00_15_8175008')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-29T10_00_16_2421022')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-29T19_00_17_5663960')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-29T22_00_18_0254043')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-30T01_00_18_5303866')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-30T04_00_18_9281023')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-30T07_00_19_3570970')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-30T10_00_19_8181597')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-30T19_00_21_1284674')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-30T22_00_21_5593149')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-31T01_00_22_0430838')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-31T04_00_22_4540678')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-31T07_00_22_9169188')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-31T10_00_23_3299774')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-31T19_00_24_6456547')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-01-31T22_00_25_1111514')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-01T01_00_25_6142861')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-01T04_00_25_9900350')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-01T07_00_26_4799630')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-01T10_00_26_9120663')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-01T18_42_06_4853962')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-01T21_42_06_7649433')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-02T00_42_07_1311164')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-02T03_42_07_5290298')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-02T06_42_08_0461776')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-02T09_42_08_3114012')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-02T13_42_08_8502356')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-02T14_42_09_0423530')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-02T15_42_09_0077018')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-02T16_42_09_1266062')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-02T17_42_09_2611680')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-02T18_42_09_4488972')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-02T19_42_09_5469495')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-02T20_42_09_7020328')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-02T21_42_09_8161657')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-02T22_42_09_9778654')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-02T23_42_10_0613174')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T00_42_10_2202516')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T01_42_10_3322689')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T02_42_10_5061094')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T03_42_10_5820035')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T04_42_10_7193146')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T05_42_10_8559210')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T06_42_11_0402671')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T07_42_11_1178206')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T08_42_11_2736219')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T09_42_11_3717043')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T10_42_11_5666094')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T11_42_11_6361141')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T12_42_11_7619216')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T13_42_11_9039767')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T14_42_12_0789801')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T15_42_12_1665316')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T16_42_12_3053363')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T17_42_12_4356261')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T18_42_12_6065605')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T19_42_12_7081104')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T20_42_12_8742490')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T21_42_12_9793074')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T22_42_13_1639008')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-03T23_42_13_2627285')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T00_42_13_3873568')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T01_42_13_5212847')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T02_42_13_6767003')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T03_42_13_7739568')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T04_42_13_9196463')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T05_42_14_0462793')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T06_42_14_2137107')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T07_42_14_3101352')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T08_42_14_4784725')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T09_42_14_5759951')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T10_42_14_7674079')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T11_42_14_8411669')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T12_42_14_9720113')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T13_42_15_0846429')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T14_42_15_3542959')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T15_42_15_3468789')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T16_42_15_4709879')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T17_42_15_6103717')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T18_42_15_7727721')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T19_42_15_8826011')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T20_42_16_0384103')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T21_42_16_1296379')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T22_42_16_3489196')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-04T23_42_16_3945585')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T00_42_16_5220190')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T01_42_16_6459508')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T02_42_16_8069868')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T03_42_16_9203388')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T04_42_17_0549238')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T05_42_17_1884226')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T06_42_17_3532367')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T07_42_17_4669718')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T08_42_17_5963379')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T09_42_17_7150183')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T10_42_17_8922856')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T11_42_18_0029258')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T12_42_18_1039963')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T13_42_18_2356589')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T14_42_18_4158635')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T15_42_18_4825802')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T16_42_18_6095828')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T17_42_18_7481905')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T18_42_18_9233011')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T19_42_19_0409254')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T20_42_19_6484603')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T21_42_19_7839181')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T22_42_19_9618062')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-05T23_42_20_0563663')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-06T00_42_20_1915406')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-06T01_42_20_3021004')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-06T02_42_20_4488683')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-06T03_42_20_5593643')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-06T04_42_20_7069944')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-06T05_42_20_8166625')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-06T06_42_20_9942759')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-06T07_42_21_0797247')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-06T08_42_21_2314818')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-06T09_42_21_3569666')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-06T10_42_21_5435049')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-06T11_42_21_6159874')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-06T12_42_21_7724878')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_web_ispirit_001_name'), '/2024-02-06T13_42_21_8802126')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_web_ispirit_001_name'))]"
+            ]
+        }
+    ]
+}
